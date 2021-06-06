@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
-const ItemSchema = new Schema({
+const MemeSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -12,15 +12,16 @@ const ItemSchema = new Schema({
     trim: true,
   },
   price: Number,
+  imageLocation: String,
   owner: {
     type: Schema.Types.ObjectId,
     ref: "User",
   },
-  imageLocation: String,
+  usageCount: Number,
 }, {
   timestamps: true,
 });
+MemeSchema.index({name: 'text', 'description': 'text'});
+mongoose.model("Meme", MemeSchema);
 
-mongoose.model("Item", ItemSchema);
-
-export default mongoose.model("Item");
+export default mongoose.model("Meme");

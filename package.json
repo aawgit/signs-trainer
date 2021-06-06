@@ -4,10 +4,10 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build",
-    "build": "babel server/src -d server/dist",
-    "start": "babel-node server/src/server.js",
-    "dev": "concurrently \"npm run start\" \"cd client && npm run start\"",
+    "heroku-postbuild": "npm install && npm run build",
+    "build": "babel src -d src/dist",
+    "start": "babel-node src/server.js",
+    "dev": "npm run start",
     "restart": "rimraf dist && npm run start",
     "test": "jest"
   },

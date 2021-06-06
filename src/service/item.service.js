@@ -1,4 +1,4 @@
-import Item from "../models/Item";
+import Meme from "../models/Meme";
 export const deleteImage = () => {
   // TODO: Review this
   //   const publicId = "demo/jt1y0p5ezv2mtcpj79ic";
@@ -8,7 +8,7 @@ export const deleteImage = () => {
 };
 
 export const createItem = async (req) => {
-  return await Item.create({
+  return await Meme.create({
     name: req.body.name,
     description: req.body.description,
     price: req.body.price,
@@ -19,19 +19,22 @@ export const createItem = async (req) => {
 
 export const getItem = async (id = null) => {
   if (id)
-    return await Item.findById(id)
-      .populate({ path: "owner", select: "name" })
-      .exec();
+    return await Meme.findById(id).exec();
   else
-    return await Item.find({})
-      .populate({ path: "owner", select: "name" })
-      .exec();
+    return await Meme.find({}).exec();
 };
 
 export const deleteItem = async (id) => {
-  await Item.findByIdAndRemove(id);
+  await Meme.findByIdAndRemove(id);
 };
 
 export const updateItem = async (conditions) => {
-  return await Item.findOneAndUpdate(conditions);
+  return await Meme.findOneAndUpdate(conditions);
 };
+
+export const searchItem = async (searchString) => {
+  const searchResult = await Meme.find({$text: {$search: searchString}})
+  .limit(5)
+  .exec();
+  return searchResult
+}

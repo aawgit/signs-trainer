@@ -5,6 +5,7 @@ import {
   deleteImage,
   deleteItem,
   getItem,
+  searchItem,
   updateItem,
 } from "../service/item.service";
 import multer from "multer";
@@ -25,7 +26,7 @@ cloudinary.config({
 
 const cloudStorage = cloudinaryStorage({
   cloudinary: cloudinary,
-  folder: "shopApp",
+  folder: "memes",
   allowedFormats: ["jpg", "png"],
   transformation: [{ width: 400, height: 400, crop: "limit" }],
 });
@@ -60,7 +61,7 @@ router.delete("/image", (req, res) => {
 // CREATES A NEW ITEM
 router.post(
   "/",
-  VerifyToken,
+  // VerifyToken,
   cloudImageUpload.single("file"),
   async (req, res) => {
     try {
@@ -89,7 +90,14 @@ router.get("/:id", async (req, res) => {
 // RETURNS ALL THE ITEMS IN THE DATABASE
 router.get("/", async (req, res) => {
   try {
-    const items = await getItem();
+    const searchString = req.query?.searchString
+    let items
+    if(searchString) {
+      items = await searchItem(searchString)
+    }
+    else {
+      items = await getItem();
+    }
     if (!items) return res.status(404).send("No items found.");
     res.status(200).send(items);
   } catch (err) {

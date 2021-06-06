@@ -35,8 +35,8 @@ var UserSchema = new mongoose.Schema(
   }
 );
 
-UserSchema.virtual("items", {
-  ref: "Item",
+UserSchema.virtual("memes", {
+  ref: "Meme",
   foreignField: "owner",
   localField: "_id",
 });
