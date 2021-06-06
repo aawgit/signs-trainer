@@ -61,7 +61,7 @@ router.delete("/image", (req, res) => {
 // CREATES A NEW ITEM
 router.post(
   "/",
-  // VerifyToken,
+  VerifyToken,
   cloudImageUpload.single("file"),
   async (req, res) => {
     try {
