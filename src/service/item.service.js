@@ -11,9 +11,10 @@ export const createItem = async (req) => {
   return await Meme.create({
     name: req.body.name,
     description: req.body.description,
-    price: req.body.price,
     owner: req.userId,
     imageLocation: req.file.secure_url,
+    texts: req.body.texts,
+    font:req.body.font
   });
 };
 
@@ -21,7 +22,9 @@ export const getItem = async (id = null) => {
   if (id)
     return await Meme.findById(id).exec();
   else
-    return await Meme.find({}).exec();
+    return await Meme.aggregate(
+      [ { $sample: { size: 6 } } ]
+   )
 };
 
 export const deleteItem = async (id) => {
