@@ -14,7 +14,7 @@ export const createItem = async (req) => {
     owner: req.userId,
     imageLocation: req.file.secure_url,
     texts: req.body.texts,
-    font:req.body.font
+    font: req.body.font
   });
 };
 
@@ -23,8 +23,8 @@ export const getItem = async (id = null) => {
     return await Meme.findById(id).exec();
   else
     return await Meme.aggregate(
-      [ { $sample: { size: 6 } } ]
-   )
+      [{ $sample: { size: 6 } }]
+    )
 };
 
 export const deleteItem = async (id) => {
@@ -36,8 +36,8 @@ export const updateItem = async (conditions) => {
 };
 
 export const searchItem = async (searchString) => {
-  const searchResult = await Meme.find({$text: {$search: searchString}})
-  .limit(5)
-  .exec();
+  const searchResult = await Meme.find({ $text: { $search: searchString } })
+    .limit(5)
+    .exec();
   return searchResult
 }
