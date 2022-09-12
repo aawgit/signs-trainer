@@ -12,7 +12,6 @@ import multer from "multer";
 import cloudinary from "cloudinary";
 import cloudinaryStorage from "multer-storage-cloudinary";
 import config from "../config";
-import VerifyToken from "../_helper/VerifyToken";
 
 const router = express.Router();
 router.use(bodyParser.urlencoded({ extended: true }));
@@ -61,7 +60,6 @@ router.delete("/image", (req, res) => {
 // CREATES A NEW ITEM
 router.post(
   "/",
-  VerifyToken,
   cloudImageUpload.single("file"),
   async (req, res) => {
     try {
@@ -106,7 +104,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.delete("/:id", VerifyToken, async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     await deleteItem(req.params.id);
     return res.status(200).send("Iteme: " + item.name + " was deleted.");
@@ -116,7 +114,7 @@ router.delete("/:id", VerifyToken, async (req, res) => {
 });
 
 // UPDATES A SINGLE ITEM IN THE DATABASE
-router.put("/:id", VerifyToken, async (req, res) => {
+router.put("/:id", async (req, res) => {
   var conditions = { _id: req.params.id, owner: req.userId };
   try {
     await updateItem(conditions);
