@@ -1,17 +1,16 @@
 import express from "express";
 import bodyParser from "body-parser";
 import {
-  createItem,
+  createImage,
   deleteImage,
-  deleteItem,
   getItem,
-  searchItem,
-  updateItem,
-} from "../service/item.service";
+  searchImage,
+} from "../service/image.service";
 import multer from "multer";
 import cloudinary from "cloudinary";
 import cloudinaryStorage from "multer-storage-cloudinary";
 import config from "../config";
+import { logger } from "../utils/logger"
 
 const router = express.Router();
 router.use(bodyParser.urlencoded({ extended: true }));
@@ -25,37 +24,17 @@ cloudinary.config({
 
 const cloudStorage = cloudinaryStorage({
   cloudinary: cloudinary,
-  folder: "memes",
+  folder: "signs",
   allowedFormats: ["jpg", "png"],
-  transformation: [{ width: 400, height: 400, crop: "limit" }],
+  // transformation: [{ width: 400, height: 400, crop: "limit" }],
 });
 const cloudImageUpload = multer({ storage: cloudStorage });
 
-//Image upload config
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./public/images");
-    console.log(file);
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
-});
-var upload = multer({ storage });
-
-//image uploading with cloudinary
-
-/* router.post("/image", cloudImageUpload.single("file"), function(req, res) {
-  console.log(req.file)
-}); */
 
 router.delete("/image", (req, res) => {
   deleteImage();
 });
 
-/* router.post("/upload-image", upload.single("file"), function(req, res) {
-  res.status("201").send("Uploaded");
-}); */
 
 // CREATES A NEW ITEM
 router.post(
@@ -63,9 +42,10 @@ router.post(
   cloudImageUpload.single("file"),
   async (req, res) => {
     try {
-      const item = await createItem(req);
+      const item = await createImage(req);
       res.status(201).send(item);
     } catch (err) {
+      logger.error(String(err))
       return res
         .status(500)
         .send("There was a problem adding the information to the database.");
@@ -91,7 +71,7 @@ router.get("/", async (req, res) => {
     const searchString = req.query?.searchString
     let items
     if(searchString) {
-      items = await searchItem(searchString)
+      items = await searchImage(searchString)
     }
     else {
       items = await getItem();
@@ -104,24 +84,5 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
-  try {
-    await deleteItem(req.params.id);
-    return res.status(200).send("Iteme: " + item.name + " was deleted.");
-  } catch (err) {
-    return res.status(500).send("There was a problem deleting the item.");
-  }
-});
-
-// UPDATES A SINGLE ITEM IN THE DATABASE
-router.put("/:id", async (req, res) => {
-  var conditions = { _id: req.params.id, owner: req.userId };
-  try {
-    await updateItem(conditions);
-    res.status(200).send(item);
-  } catch (err) {
-    return res.status(500).send("There was a problem updating the item.");
-  }
-});
 
 export default router;
