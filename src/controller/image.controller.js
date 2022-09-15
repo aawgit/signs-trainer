@@ -6,44 +6,22 @@ import {
   getItem,
   searchImage,
 } from "../service/image.service";
-import multer from "multer";
-import cloudinary from "cloudinary";
-import cloudinaryStorage from "multer-storage-cloudinary";
-import config from "../config";
 import { logger } from "../utils/logger"
+
 
 const router = express.Router();
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
-cloudinary.config({
-  cloud_name: config.cloudinaryCloudName,
-  api_key: config.cloudinaryApiKey,
-  api_secret: config.cloudinaryApiSecret,
-});
-
-const cloudStorage = cloudinaryStorage({
-  cloudinary: cloudinary,
-  folder: "signs",
-  allowedFormats: ["jpg", "png"],
-  // transformation: [{ width: 400, height: 400, crop: "limit" }],
-});
-const cloudImageUpload = multer({ storage: cloudStorage });
-
-
-router.delete("/image", (req, res) => {
-  deleteImage();
-});
-
-
-// CREATES A NEW ITEM
 router.post(
-  "/",
-  cloudImageUpload.single("file"),
+  "/v2",
   async (req, res) => {
     try {
-      const item = await createImage(req);
-      res.status(201).send(item);
+      if (req.body.file) {
+        createImage(req.body.expected, req.body.current, req.body.file)
+        return res.status(201).send();
+      }
+
     } catch (err) {
       logger.error(String(err))
       return res
@@ -52,6 +30,10 @@ router.post(
     }
   }
 );
+
+router.delete("/image", (req, res) => {
+  deleteImage();
+});
 
 // GETS A SINGLE ITEM FROM THE DATABASE
 router.get("/:id", async (req, res) => {
@@ -70,7 +52,7 @@ router.get("/", async (req, res) => {
   try {
     const searchString = req.query?.searchString
     let items
-    if(searchString) {
+    if (searchString) {
       items = await searchImage(searchString)
     }
     else {

@@ -1,4 +1,15 @@
+import { v2 as cloudinary } from 'cloudinary'
+import { logger } from "../utils/logger"
+import config from "../config";
 import Image from "../models/Image";
+
+
+cloudinary.config({
+  cloud_name: config.cloudinaryCloudName,
+  api_key: config.cloudinaryApiKey,
+  api_secret: config.cloudinaryApiSecret,
+});
+
 export const deleteImage = () => {
   // TODO: Review this
   //   const publicId = "demo/jt1y0p5ezv2mtcpj79ic";
@@ -7,12 +18,15 @@ export const deleteImage = () => {
   //   });
 };
 
-export const createImage = async (req) => {
-  return await Image.create({
-    expected: req.body.expected,
-    current: req.body.current,
-    imageLocation: req.file.secure_url
+export const createImage = async (expected, current, file) => {
+  const result = await cloudinary.uploader.upload(file, { folder: 'signs' })
+  const image = await Image.create({
+    expected,
+    current,
+    imageLocation: result.secure_url
   });
+  logger.info(`Successfully uploaded the image. ${image._id}`)
+  return image
 };
 
 export const getItem = async (id = null) => {
