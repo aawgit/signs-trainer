@@ -6,9 +6,10 @@
   "scripts": {
     "heroku-postbuild": "npm install && npm run build",
     "build": "babel src -d src/dist",
-    "start": "babel-node src/server.js",
+    "start2": "babel-node src/server.js",
     "dev": "npm run start",
     "restart": "rimraf dist && npm run start",
+    "start": "rimraf dist && npm run start",
     "test": "jest"
   },
   "author": "",
