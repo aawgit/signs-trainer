@@ -10,7 +10,8 @@ const Image = new Schema({
   },
   imageLocation: String,
   origin: String,
-  downloadedOn: Date
+  downloadedOn: Date,
+  ip: String
 }, {
   timestamps: true,
 }, { collection: 'image_data' });

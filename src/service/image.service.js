@@ -18,12 +18,13 @@ export const deleteImage = () => {
   //   });
 };
 
-export const createImage = async (expected, current, file) => {
+export const createImage = async (expected, current, file, ip) => {
   const result = await cloudinary.uploader.upload(file, { folder: 'signs' })
   const image = await Image.create({
     expected,
     current,
-    imageLocation: result.secure_url
+    imageLocation: result.secure_url,
+    ip
   });
   logger.info(`Successfully uploaded the image. ${image._id}`)
   return image
