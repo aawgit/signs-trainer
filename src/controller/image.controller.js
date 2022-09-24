@@ -18,6 +18,8 @@ router.post(
   async (req, res) => {
     try {
       if (req.body.file) {
+        // req.headers['x-forwarded-for'] only tested with heroku. If there's no proxy in the server
+        // this will have to be replaced with a different property. Option: req.ip 
         createImage(req.body.expected, req.body.current, req.body.file, req.headers['x-forwarded-for'])
         return res.status(201).send();
       }
