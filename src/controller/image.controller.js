@@ -18,7 +18,7 @@ router.post(
   async (req, res) => {
     try {
       if (req.body.file) {
-        createImage(req.body.expected, req.body.current, req.body.file, req.socket.remoteAddress)
+        createImage(req.body.expected, req.body.current, req.body.file, req.ip)
         return res.status(201).send();
       }
 
