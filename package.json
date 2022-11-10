@@ -4,7 +4,6 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "heroku-postbuild": "npm install && npm run build",
     "build": "babel src -d src/dist",
     "start": "babel-node src/server.js",
     "dev": "npm run start",
