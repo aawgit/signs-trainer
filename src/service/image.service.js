@@ -31,7 +31,7 @@ export const createImage = async (expected, current, file, ip) => {
     return image
   }
   catch (err) {
-    logger.error(String(err))
+    logger.error(JSON.stringify(err))
     return err
   }
 };
